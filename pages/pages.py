@@ -1,4 +1,5 @@
 import pygame
+from pages.nautical import Nautical
 from pages.startpage import StartPage
 from pages.wharf import Wharf
 from pages.trade import Trade
@@ -9,6 +10,7 @@ class Pages:
         self.startpage = StartPage(this)
         self.wharf = Wharf(this)
         self.trade = Trade(this)
+        self.nautical = Nautical(this)
         pass
     
     # 转场效果

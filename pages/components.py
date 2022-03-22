@@ -5,7 +5,10 @@ import pygame
 class Slot:
     def __init__(self, this):
         self.this = this
-        if 7 > len(this.player.inventory) > 0:
+        self.generate_cards()
+    
+    def generate_cards(self):
+        if 7 > len(self.this.player.inventory) > 0:
             self.cards = [
                 Card(self.this, i["icon"], i["name"], small=True)
                 for i in self.this.player.inventory

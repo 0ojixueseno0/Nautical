@@ -11,7 +11,11 @@ class Data:
         else:
             self.generate_file()
             self.load_data()
-            
+    
+    def get_map_data(self, map: str):
+        with open(f"_data/maps/{map}.json", encoding="utf-8") as f:
+            return json.load(f)
+    
     def check_file_exist(self):
         return os.path.exists("_data/ships.json") and os.path.exists("_data/items.json") and os.path.exists("_data/events.json")
 

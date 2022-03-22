@@ -16,7 +16,8 @@ class Trade:
                          no_label="离开",
                          hint="选择需要购买的货物 点击交易按钮进行购买",
                         #  hint="点按库存内的卡片进行交易，点击交易按钮出售物品",
-                         router="trade")
+                         router="trade",
+                         btn_yes_func=self.confirm_trade)
         
         self.villager = pygame.transform.scale(
             pygame.image.load("_assets/trade/villager.png")
@@ -111,9 +112,38 @@ class Trade:
         )
         self.sel_items_bg.fill((255,255,255,128))
     
-    #TODO
+    def confirm_trade(self):
+        if self.this.showdialog == "buy" and self.select_goods is not None:
+            price = int(self.goods[self.select_goods]["price"])
+            if price <= self.this.player.money and self.this.player.ship["capacity"] > len(self.this.player.inventory):
+                self.this.player.money -= price
+                self.this.player.inventory.append(self.goods[self.select_goods])
+                self.menu.change_hint("成功购买 {}".format(self.goods[self.select_goods]["name"]))
+                self.slot.generate_cards()
+            else:
+                self.menu.change_hint("你的货币不足以购买 {}"
+                    .format(self.goods[self.select_goods]["name"])
+                    if price > self.this.player.money else "你的船无法再装下更多的货物了")
+                
+        elif self.this.showdialog == "sell" and self.select_item is not None:
+            currentitem = self.this.player.inventory[self.select_item]
+            price = int(currentitem["price"])
+            self.this.player.money += price * self.getrect(currentitem["id"])
+            self.menu.change_hint("成功售出 {}".format(currentitem["name"]))
+            del(self.this.player.inventory[self.select_item])
+            self.slot.generate_cards()
+            self.select_item = None
+            pass
+    
     def getrect(self, itemname: str=None) -> float:
-        return 1.2
+        mapdata = self.this.data.get_map_data(self.this.map)
+        if itemname in mapdata[self.this.player.location]["sell"]:
+            return 0.9
+        if itemname in mapdata[self.this.player.location]["saleable"]:
+            return 1.2
+        if itemname in mapdata[self.this.player.location]["unsaleable"]:
+            return 0.6
+        return 1
     
     def select_items(self, selected):
         # select item from inventory
@@ -197,7 +227,7 @@ class Trade:
                 self.this.screen.blit(self.rwarr, (867,239))
                 self.this.screen.blit(self.price_icon, (939,242))
                 self.pixelnum.draw_action(
-                    self.sell_price,
+                    int(self.sell_price * self.getrect(self.this.player.inventory[self.select_item]["id"]) // 1),
                     (987,250),
                     (32,32)
                 )

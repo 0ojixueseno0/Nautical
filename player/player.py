@@ -10,6 +10,7 @@ class Player:
         self.ship = data["ship"]
         self.inventory = data["inventory"]
         self.hasShip = True
+        self.location = "A"
     
     
     def reset_player(self):
