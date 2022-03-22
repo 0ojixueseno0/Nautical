@@ -54,11 +54,11 @@ class Menu:
         )
         self.ship_icon = pygame.transform.scale(
             pygame.image.load("./_assets/objects/locked.png")
-            .convert_alpha(), (29,29)
+            .convert_alpha(), (30,30)
         )
         self.ship_durable = pygame.transform.scale(
             pygame.image.load("./_assets/wharf/durable.png")
-            .convert_alpha(), (29,29)
+            .convert_alpha(), (27,27)
         )
         if this.player.hasShip:
             self.ship_name = self.font.render(this.player.ship["name"], True, (255,255,255))
@@ -66,6 +66,12 @@ class Menu:
             self.durable = int(this.player.ship["durable"])
         self.player_money = int(this.player.money)
         self.pixnum = PixelNum(this)
+    
+    def upload_player_data(self):
+        if self.this.player.hasShip:
+            self.player_supplies = int(self.this.player.supplies)
+            self.durable = int(self.this.player.ship["durable"])
+        self.player_money = int(self.this.player.money)
     
     def change_hint(self, hint: str):
         self.hint = self.font.render(hint, True, (255,255,255))
@@ -91,9 +97,16 @@ class Menu:
         self.this.screen.blit(self.btn_yes_label, (self.btn_yes_rect.x + 25, self.btn_yes_rect.y + 16))
         self.this.screen.blit(self.btn_no_label, (self.btn_no_rect.x + 25, self.btn_no_rect.y + 16))
         if self.this.player.hasShip:
-            pass
-        self.this.screen.blit(self.money_icon, (567, 614))
-        self.pixnum.draw_action(self.player_money,(597, 614), (29,29))
+            self.this.screen.blit(self.ship_icon, (567, 577)) #Ship 1
+            self.this.screen.blit(self.ship_name, (605, 585))
+            
+            self.this.screen.blit(self.supplies_icon, (567, 643)) #Supply 3
+            self.pixnum.draw_action(self.player_supplies, (597, 643), (29,29))
+            
+            self.this.screen.blit(self.ship_durable, (569, 674)) #Durable 4
+            self.pixnum.draw_action(self.durable, (597, 674), (29,29))
+        self.this.screen.blit(self.money_icon, (567, 612)) #Money 2
+        self.pixnum.draw_action(self.player_money,(597, 612), (29,29))
 class Dialog:
     def __init__(self, this, title:str):
         self.this = this

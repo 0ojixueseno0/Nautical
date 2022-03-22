@@ -6,6 +6,7 @@ class BackgroundMusic:
     def __init__(self, this):
         self.this = this
         self.ocean_music = "./_assets/sounds/ocean.ogg"
+        # self.flyinglow = "./_assets/sounds/deepsea.ogg"
         self.flyinglow = "./_assets/sounds/flyinglow.ogg"
         self.seagull = "./_assets/sounds/seagull.ogg" # 海鸥
         self.sea_effect = pygame.mixer.Sound("./_assets/sounds/seaeffect.ogg") # 海浪

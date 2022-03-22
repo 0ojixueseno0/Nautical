@@ -1,6 +1,14 @@
 {
     "money": 20,
-    "supplies": 0,
-    "ship": {},
+    "supplies": 1,
+    "ship": {
+        "name": "小木船",
+        "capacity": 1,
+        "speed": 1,
+        "danger": 0,
+        "durable": 1,
+        "icon": "./_assets/objects/raft.png",
+        "price": 10
+    },
     "inventory": []
 }

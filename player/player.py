@@ -3,13 +3,13 @@ import json
 class Player:
     def __init__(self, this):
         self.this = this
-        with open("./_data/player.json") as f:
+        with open("./_data/player.json", encoding="utf-8") as f:
             data = json.load(f)
         self.money = data["money"]
         self.supplies = data["supplies"]
         self.ship = data["ship"]
         self.inventory = data["inventory"]
-        self.hasShip = False
+        self.hasShip = True
     
     
     def reset_player(self):
