@@ -10,5 +10,30 @@
         "icon": "./_assets/objects/raft.png",
         "price": 10
     },
-    "inventory": []
+    "inventory": [
+        {
+            "name": "木材",
+            "price": 10,
+            "icon": "./_assets/items/wood.png",
+            "id": "wood"
+        },
+        {
+            "name": "木材",
+            "price": 10,
+            "icon": "./_assets/items/wood.png",
+            "id": "wood"
+        },
+        {
+            "name": "木材",
+            "price": 10,
+            "icon": "./_assets/items/wood.png",
+            "id": "wood"
+        },
+        {
+            "name": "香水",
+            "price": 50,
+            "icon": "./_assets/items/perfume.png",
+            "id": "perfume"
+        }
+    ]
 }

@@ -1,6 +1,6 @@
 import pygame
 
-from pages.components import Card, Menu, PixelNum
+from pages.components import Card, Menu, PixelNum, Slot
 from pages.components import Dialog
 
 class Trade:
@@ -14,7 +14,8 @@ class Trade:
         self.menu = Menu(this,
                          yes_label="交易",
                          no_label="离开",
-                         hint="点按库存内的卡片进行交易，点击交易按钮出售物品",
+                         hint="选择需要购买的货物 点击交易按钮进行购买",
+                        #  hint="点按库存内的卡片进行交易，点击交易按钮出售物品",
                          router="trade")
         
         self.villager = pygame.transform.scale(
@@ -94,8 +95,36 @@ class Trade:
             pygame.image.load("_assets/trade/rwarr.png")
             .convert_alpha(), (48,48)
         )
+        self.price_icon = pygame.transform.scale(
+            pygame.image.load("_assets/trade/coins.png")
+            .convert_alpha(), (46,42)
+        )
         self.select_item = None
+        self.sell_price = None
+        
+        self.slot = Slot(this)
+        self.slot.signComponent(self.select_items, "trade")
+        
+        self.sel_items_bg = pygame.Surface(
+            (self.slot.cards_rect[0].width + 10, self.slot.cards_rect[0].height + 8),
+            pygame.SRCALPHA
+        )
+        self.sel_items_bg.fill((255,255,255,128))
     
+    #TODO
+    def getrect(self, itemname: str=None) -> float:
+        return 1.2
+    
+    def select_items(self, selected):
+        # select item from inventory
+        if self.this.showdialog == "sell":
+            if self.select_item == selected:
+                self.select_item = None
+            else:
+                self.select_item = selected
+                self.select_item_card = Card(self.this, self.this.player.inventory[selected]["icon"], self.this.player.inventory[selected]["name"])
+                self.sell_price = int(self.this.player.inventory[self.select_item]["price"] * self.getrect() // 1)
+        
     def packsupply(self):
         price = 5
         if self.this.player.supplies == 25:
@@ -104,14 +133,14 @@ class Trade:
         if self.this.player.money >= price:
             self.this.player.money -= price
             self.this.player.supplies = 25
-            self.menu.upload_player_data()
+            # self.menu.upload_player_data()
         else:
             self.menu.change_hint("你的货币不足以补充物资")
             
-            
-            
     
     def switch_window(self, window:str):
+        self.select_goods = None
+        self.select_item = None
         self.this.showdialog = window
     
     def select_goods(self, select):
@@ -126,6 +155,7 @@ class Trade:
         self.this.screen.blit(self.btn_sell, (413, 265))
         self.this.screen.blit(self.btn_supply, (325, 313))
         self.this.screen.blit(self.bobbletitle, (342, 235))
+        
         
         if self.this.showdialog == "buy":
             self.dialog_buy.draw_action()
@@ -154,8 +184,25 @@ class Trade:
         elif self.this.showdialog == "sell":
             self.dialog_sell.draw_action()
             if self.select_item is None:
-                self.this.screen.blit(self.hint, (533)) #TODO
-            self.this.screen.blit(self.rwarr, (867,239))
+                self.this.screen.blit(self.hint, (
+                    533 + self.dialog_sell.background_rect.width / 2 - self.hint_rect.width / 2,
+                    124 + self.dialog_sell.background_rect.height / 2 - self.hint_rect.height / 2
+                    ))
+            else:
+                self.this.screen.blit(self.sel_items_bg, (
+                    45 + (self.slot.cards_rect[self.select_item].width + 10) * self.select_item,
+                    599
+                ))
+                self.select_item_card.draw_action((750, 176))
+                self.this.screen.blit(self.rwarr, (867,239))
+                self.this.screen.blit(self.price_icon, (939,242))
+                self.pixelnum.draw_action(
+                    self.sell_price,
+                    (987,250),
+                    (32,32)
+                )
+        
+        self.slot.draw_action()
         pass
         
         

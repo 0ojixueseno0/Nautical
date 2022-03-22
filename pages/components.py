@@ -2,6 +2,48 @@
 
 import pygame
 
+class Slot:
+    def __init__(self, this):
+        self.this = this
+        if 7 > len(this.player.inventory) > 0:
+            self.cards = [
+                Card(self.this, i["icon"], i["name"], small=True)
+                for i in self.this.player.inventory
+                ]
+            self.cards_rect = [
+                i.get_rect()
+                for i in self.cards
+            ]
+            for i, c in enumerate(self.cards_rect):
+                c.x = self.cards_rect[i].x = 50 + (10 + c.width) * i
+                c.y = self.cards_rect[i].y = 602
+    
+    def signComponent(self, function=None, router=None):
+        """
+        param function: function to be called when the component is clicked
+        def function([self], clicked):
+            print(clicked)
+        # num what you clicked
+        """
+        if 7 > len(self.this.player.inventory) > 0:
+            for i, c in enumerate(self.cards_rect):
+                self.this.Components.addComponent(
+                    c,
+                    function,
+                    router=router,
+                    args=i
+                )
+    
+    def draw_action(self):
+        if 7 > len(self.this.player.inventory) > 0:
+            for i, c in enumerate(self.cards):
+                c.draw_action((
+                    50 + (10 + self.cards_rect[i].width) * i, 
+                    602
+                    ))
+    
+    
+
 class Menu:
     def __init__(self, this, yes_label="确定", no_label="取消", hint="这是默认的提示信息", btn_yes_func=None, btn_no_func=None, router=None):
         self.this = this
@@ -62,16 +104,30 @@ class Menu:
         )
         if this.player.hasShip:
             self.ship_name = self.font.render(this.player.ship["name"], True, (255,255,255))
-            self.player_supplies = int(this.player.supplies)
-            self.durable = int(this.player.ship["durable"])
-        self.player_money = int(this.player.money)
+            # self.player_supplies = int(this.player.supplies)
+            # self.durable = int(this.player.ship["durable"])
+        # self.player_money = int(this.player.money)
         self.pixnum = PixelNum(this)
-    
-    def upload_player_data(self):
-        if self.this.player.hasShip:
-            self.player_supplies = int(self.this.player.supplies)
-            self.durable = int(self.this.player.ship["durable"])
-        self.player_money = int(self.this.player.money)
+        # if 7 > len(this.player.inventory) > 0:
+            # self.inventory = this.player.inventory
+            # self.slot_cards_generate()
+            
+    # def slot_cards_generate(self):
+    #     self.cards = [
+    #         Card(self.this, i["icon"], i["name"], small=True)
+    #         for i in self.this.player.inventory
+    #         ]
+    #     self.cards_rect = [
+    #         i.get_rect()
+    #         for i in self.cards
+    #     ]
+        
+    #     pass
+    # def upload_player_data(self):
+        # if self.this.player.hasShip:
+            # self.player_supplies = int(self.this.player.supplies)
+            # self.durable = int(self.this.player.ship["durable"])
+        # self.player_money = int(self.this.player.money)
     
     def change_hint(self, hint: str):
         self.hint = self.font.render(hint, True, (255,255,255))
@@ -101,12 +157,18 @@ class Menu:
             self.this.screen.blit(self.ship_name, (605, 585))
             
             self.this.screen.blit(self.supplies_icon, (567, 643)) #Supply 3
-            self.pixnum.draw_action(self.player_supplies, (597, 643), (29,29))
+            self.pixnum.draw_action(int(self.this.player.supplies), (597, 643), (29,29))
             
             self.this.screen.blit(self.ship_durable, (569, 674)) #Durable 4
-            self.pixnum.draw_action(self.durable, (597, 674), (29,29))
+            self.pixnum.draw_action(int(self.this.player.ship["durable"]), (597, 674), (29,29))
         self.this.screen.blit(self.money_icon, (567, 612)) #Money 2
-        self.pixnum.draw_action(self.player_money,(597, 612), (29,29))
+        self.pixnum.draw_action(int(self.this.player.money),(597, 612), (29,29))
+        # if 7 > len(self.this.player.inventory) > 0:
+        #     for i, c in enumerate(self.cards):
+        #         c.draw_action((
+        #             50 + (10 + self.cards_rect[i].width) * i, 
+        #             602
+        #             ))
 class Dialog:
     def __init__(self, this, title:str):
         self.this = this
