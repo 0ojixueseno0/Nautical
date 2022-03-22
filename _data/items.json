@@ -1,0 +1,74 @@
+[
+    {
+        "name": "木材",
+        "price": 10,
+        "icon": "./_assets/items/wood.png",
+        "id": "wood"
+    },
+    {
+        "name": "绸缎",
+        "price": 15,
+        "icon": "./_assets/items/silk.png",
+        "id": "silk"
+    },
+    {
+        "name": "香料",
+        "price": 20,
+        "icon": "./_assets/items/spice.png",
+        "id": "spice"
+    },
+    {
+        "name": "油",
+        "price": 20,
+        "icon": "./_assets/items/oil.png",
+        "id": "oil"
+    },
+    {
+        "name": "盐",
+        "price": 20,
+        "icon": "./_assets/items/salt.png",
+        "id": "salt"
+    },
+    {
+        "name": "酒",
+        "price": 30,
+        "icon": "./_assets/items/wine.png",
+        "id": "wine"
+    },
+    {
+        "name": "香水",
+        "price": 50,
+        "icon": "./_assets/items/perfume.png",
+        "id": "perfume"
+    },
+    {
+        "name": "水晶",
+        "price": 100,
+        "icon": "./_assets/items/crystal.png",
+        "id": "crystal"
+    },
+    {
+        "name": "小麦",
+        "price": 15,
+        "icon": "./_assets/items/wheat.png",
+        "id": "wheat"
+    },
+    {
+        "name": "棉花",
+        "price": 15,
+        "icon": "./_assets/items/cotton.png",
+        "id": "cotton"
+    },
+    {
+        "name": "兽牙",
+        "price": 100,
+        "icon": "./_assets/items/teeth.png",
+        "id": "teeth"
+    },
+    {
+        "name": "珠宝",
+        "price": 150,
+        "icon": "./_assets/items/jewelry.png",
+        "id": "jewelry"
+    }
+]
