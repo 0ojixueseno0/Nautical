@@ -82,6 +82,12 @@ class MapGenerator:
     def confirm_action(self, type):
         if self.select is not None:
             self.mapdata[self.select[1]][self.select[0]] = type
+    def setspawn(self):
+        if self.select is not None:
+            self.mapconf["spawn"]["x"] = self.select[0]
+            self.mapconf["spawn"]["y"] = self.select[1]
+            self.select = None
+            #WIP: 出生点背景
         
     def draw_action(self):
         self.this.screen.blit(self.map_bg, (0, 0))
@@ -132,7 +138,7 @@ class editor:
             font.render("2: 岛屿区块A（判断点）", True, (255,255,255)),
             font.render("3: 岛屿区块B（判断点）", True, (255,255,255)),
             font.render("4: 岛屿区块C（判断点）", True, (255,255,255)),
-            font.render("5: 岛屿区块（出生点）", True, (255,255,255)),
+            font.render("5: 设置出生点", True, (255,255,255)),
         ]
         self.intro_bg = pygame.Surface((330,170), pygame.SRCALPHA)
         self.intro_bg.fill((0,0,0,128))
@@ -203,8 +209,10 @@ class Main:
                     self.pointer_pos = event.pos
                 if event.type == pygame.KEYDOWN:
                     # print(event.unicode)
-                    if event.unicode in ["0","1","2","3","4","5"]:
+                    if event.unicode in ["0","1","2","3","4"]:
                         self.generator.confirm_action(event.unicode)
+                    if event.unicode == "5":
+                        self.generator.setspawn()
                     
             pygame.display.update()
             self.clock.tick(self.fps)

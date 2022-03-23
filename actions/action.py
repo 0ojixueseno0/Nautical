@@ -18,4 +18,6 @@ class DrawActions:
             self.this.pages.wharf.draw_action()
         elif self.this.router == "trade":
             self.this.pages.trade.draw_action()
+        elif self.this.router == "nautical":
+            self.this.pages.nautical.draw_action()
         

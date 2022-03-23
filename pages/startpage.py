@@ -26,7 +26,11 @@ class StartPage:
         startbtn_rect = self.startbtn.get_rect()
         
         startbtn_rect.x, startbtn_rect.y = 592, 395
-        self.this.Components.addComponent(startbtn_rect, self.onbtnclick)
+        self.this.Components.addComponent(
+            startbtn_rect, 
+            self.onbtnclick,
+            router="startpage"
+            )
         
         self.x1 = 0
         self.x2 = self.x1 + self.cloudbg_copied_rect.width

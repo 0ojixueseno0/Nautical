@@ -10,7 +10,7 @@ class Player:
         self.ship = data["ship"]
         self.inventory = data["inventory"]
         self.hasShip = True
-        self.location = "A"
+        self.location = "A" # 所在岛屿
     
     
     def reset_player(self):

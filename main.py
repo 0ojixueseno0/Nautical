@@ -51,7 +51,7 @@ class Main:
         self.running = True
         
         # self.router = "startmenu"
-        self.router = "trade"
+        self.router = "nautical"
         self.showdialog = ""
         self.map = 0
         
@@ -78,6 +78,8 @@ class Main:
                     main.running = False
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     self.Components.onClick(event.pos)
+                    if self.router == "nautical":
+                        self.pages.nautical.click_action(event.pos)
                     
             pygame.display.update()
             self.clock.tick(self.fps)
