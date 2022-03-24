@@ -7,6 +7,8 @@ class MainActions:
             self.this.pages.startpage.rollbg_action()
         elif self.this.router == "wharf":
             self.this.pages.wharf.rollbg_action()
+        elif self.this.router == "win_lose":
+            self.this.pages.win_lose.rollbg_action()
 
 class DrawActions:
     def __init__(self, this):
@@ -20,4 +22,6 @@ class DrawActions:
             self.this.pages.trade.draw_action()
         elif self.this.router == "nautical":
             self.this.pages.nautical.draw_action()
+        elif self.this.router == "win_lose":
+            self.this.pages.win_lose.draw_action()
         

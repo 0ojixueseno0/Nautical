@@ -1,39 +1,6 @@
 {
-    "money": 20,
+    "money": 25,
     "supplies": 1,
-    "ship": {
-        "name": "小木船",
-        "capacity": 1,
-        "speed": 1,
-        "danger": 0,
-        "durable": 1,
-        "icon": "./_assets/objects/raft.png",
-        "price": 10
-    },
-    "inventory": [
-        {
-            "name": "木材",
-            "price": 10,
-            "icon": "./_assets/items/wood.png",
-            "id": "wood"
-        },
-        {
-            "name": "木材",
-            "price": 10,
-            "icon": "./_assets/items/wood.png",
-            "id": "wood"
-        },
-        {
-            "name": "木材",
-            "price": 10,
-            "icon": "./_assets/items/wood.png",
-            "id": "wood"
-        },
-        {
-            "name": "香水",
-            "price": 50,
-            "icon": "./_assets/items/perfume.png",
-            "id": "perfume"
-        }
-    ]
+    "ship": {},
+    "inventory": []
 }

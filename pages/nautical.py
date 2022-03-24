@@ -1,10 +1,32 @@
+import random
 import pygame
 
-from pages.components import Menu, Slot
+from pages.components import Dialog, Menu, Slot
 
 class Nautical:
     def __init__(self, this):
         self.this = this
+        
+    def init(self, this):
+        self.show_dialog = False
+        self.event_dialog = Dialog(this, title="事件")
+        self.event_dialog_rect = self.event_dialog.get_rect()
+        self.font = pygame.font.Font("_assets/pixelfont.ttf", 20)
+        self.event_description = ""
+        self.event_btn_label = self.font.render("好的", True, (0,0,0))
+        self.event_btn_label_rect = self.event_btn_label.get_rect()
+        self.event_btn = pygame.transform.scale(
+            pygame.image.load("_assets/component/btn.png")
+            .convert_alpha(), (124, 72)
+        )
+        self.event_btn_rect = self.event_btn.get_rect()
+        self.event_btn_rect.x = this.resolution_width//2 - self.event_btn_rect.width//2 - 5
+        self.event_btn_rect.y = self.event_dialog_rect.height - self.event_btn_rect.height
+        this.Components.addComponent(self.event_btn_rect,
+                                     self.close_dialog,
+                                     router="nautical",
+                                     isDialog=True,
+                                     dialog_id="event_dialog")
         
         self.background = pygame.transform.scale(
             pygame.image.load(f"_assets/maps/{this.map}.png"),
@@ -18,8 +40,10 @@ class Nautical:
                         yes_label="航行",
                         no_label="停留",
                         btn_yes_func=self.sailing,
-                        hint="点击高亮的航行点选择路线 点击航行按钮开始航行",
+                        btn_no_func=self.stay,
+                        hint="点击航行点选择路线 点击航行按钮开始航行 双击航行点直接航行",
                         router="nautical")
+        self.menu.set_ship_name()
 
         self.slot = Slot(this)
         self.prop = self.mapdata["map"]["prop"].split(":")
@@ -42,6 +66,11 @@ class Nautical:
         self.islands = [] # 可以行动的岛屿组
         self.selected = [] # 选中的坐标
         
+        self.round = this.player.ship["speed"] if this.player.hasShip else 0
+        self.current_round = self.round
+        self.total_round = 0
+        # self.round_title = self.font.render("已航行了 {} 回合", True, (255,255,255))
+        # self.round_title = 
         
         self.ship_img = pygame.transform.scale(
             pygame.image.load(this.player.ship["icon"])
@@ -53,6 +82,112 @@ class Nautical:
         self.offset = pygame.Vector2((0,0))
         # self.update_ship_loc()
         self.update_target()
+        self.check_ship_loc()
+
+    def check_ship_loc(self):
+        block = self.mapdata["map"]["data"][self.ship_loc[1]][self.ship_loc[0]]
+        if block in ["2","3","4"]:
+            if block == "2":
+                self.this.player.location = "A"
+            elif block == "3":
+                self.this.player.location = "B"
+            elif block == "4":
+                self.this.player.location = "C"
+            self.this.pages.trade.load_data()
+            self.this.pages.darken_screen()
+            self.this.router = "trade"
+    
+    def random_bool(self, true:int=50) -> bool:
+        # turenum: persent of true
+        true = min(true, 100)
+        return random.randint(0, 100) < true 
+
+    def close_dialog(self):
+        self.show_dialog = False
+        self.this.showdialog = ""
+        self.this.player.check_win_lose()
+
+    def run_event(self, event):
+        eid = event["eid"]
+        print("Event:",eid)
+        if eid == "nothing_happened":
+            self.menu.change_hint(event["description"])
+            return
+        self.this.showdialog = "event_dialog"
+        self.event_dialog.change_title(event["name"])
+        self.event_description = event["description"]
+        if eid == "get_random_item":
+            if self.this.player.ship["capacity"] - len(self.this.player.inventory) > 0:
+                item = random.choice(self.this.data.items)
+                self.this.player.inventory.append(item)
+                self.slot.generate_cards()
+                self.event_description = self.event_description.format(item["name"])
+            else:
+                self.event_description = event["fail"]
+        elif eid == "add_speed":
+            self.round += random.randint(1,5)
+        elif eid == "fishing":
+            addsupply = random.randint(1,5)
+            self.event_description = self.event_description.format(addsupply)
+            self.this.player.supplies += addsupply
+        elif eid == "pirate_attack":
+            if len(self.this.player.inventory) > 0:
+                item = random.randint(0,len(self.this.player.inventory)-1)
+                self.event_description = event["description"].format(self.this.player.inventory[item]["name"])
+                del(self.this.player.inventory[item])
+                self.slot.generate_cards()
+                self.this.BackgroundMusic.play_piracy()
+            else:
+                self.event_description = event["fail"]
+                self.this.player.ship["durable"] -= 1
+                if self.this.player.money > 1:
+                    self.event_description += " 抢走了你的金币"
+                    self.this.player.money -= random.randint(1,self.this.player.money//2)
+        elif eid == "random_damage":
+            if self.this.player.ship["durable"] > 2:
+                self.this.player.ship["durable"] -= random.randint(1,2)
+            else:    
+                self.this.player.ship["durable"] -= 1
+            pass
+        self.menu.change_hint(self.event_description)
+        self.show_dialog = True
+        pass
+    
+    def events(self):
+        danger = self.this.player.ship["danger"]
+        danger *= 5
+        normal = 100 - danger
+        luck = random.randint(0,100)
+        print("Danger:",danger,"Normal:",normal,"Luck:",luck)
+        if luck > normal:
+            event = random.randint(0,len(self.this.data.events["good_events"])-1)
+            self.run_event(self.this.data.events["good_events"][event])
+            pass
+        elif danger <= luck <= normal:
+            event = random.randint(0,len(self.this.data.events["normal_events"])-1)
+            self.run_event(self.this.data.events["normal_events"][event])
+            pass
+        elif luck < danger:
+            event = random.randint(0,len(self.this.data.events["bad_events"])-1)
+            self.run_event(self.this.data.events["bad_events"][event])
+            pass
+    
+    
+    def stay(self):
+        self.check_round()
+        if self.random_bool(100):
+            self.events()
+        pass
+    
+    def check_round(self):
+        if self.current_round == 0:
+            self.current_round = self.round
+            self.total_round += 1
+            if self.random_bool():
+                self.events()
+        else:
+            self.current_round -= 1
+        pass
     
     def update_target(self):
         targets = []
@@ -95,7 +230,10 @@ class Nautical:
         rawpos[1] -= self.offset[1]
         rawpos = self.convert_pos(rawpos)
         if rawpos in self.targets or rawpos in self.islands:
-            self.selected = [] if self.selected == rawpos else rawpos
+            if self.selected == rawpos:
+                self.sailing()
+            else:
+                self.selected = rawpos
     
     def sailing(self):
         if self.selected == []:
@@ -105,7 +243,9 @@ class Nautical:
         self.ship_loc = self.selected.copy()
         self.selected = []
         self.update_target()
-        self.menu.change_hint("点击高亮的航行点选择路线 点击航行按钮开始航行")
+        self.check_round()
+        self.menu.change_hint("点击航行点选择路线 点击航行按钮开始航行 双击航行点直接航行")
+        self.check_ship_loc()
         
     def update_ship_loc(self):
         # self.ship_rect.x = 
@@ -178,4 +318,30 @@ class Nautical:
         
         self.menu.draw_action()
         self.slot.draw_action()
+        
+        #dialog
+        if self.show_dialog:
+            self.event_dialog.draw_action()
+            self.this.screen.blit(self.event_btn, (
+                self.this.resolution_width//2 - self.event_btn_rect.width//2 - 5,
+                self.event_dialog_rect.height - self.event_btn_rect.height
+            ))
+            self.this.screen.blit(self.event_btn_label, (
+                self.this.resolution_width//2 - self.event_btn_label_rect.width//2 - 5,
+                self.event_dialog_rect.height - self.event_btn_label_rect.height - self.event_btn_label_rect.height - 5
+            ))
+            desc = self.font.render(self.event_description, True, (255,255,255))
+            desc_rect = desc.get_rect()
+            self.this.screen.blit(desc, (
+                self.this.resolution_width//2 - desc_rect.width//2,
+                self.event_dialog_rect.height//2 - desc_rect.height//2 + 20
+            ))
+        
+        total_round = self.font.render("已航行了 {} 回合".format(self.total_round), True, (255,255,255))
+        total_round_rect = total_round.get_rect()
+        self.this.screen.blit(total_round, (
+            self.this.resolution_width - total_round_rect.width - 5,
+            5
+        ))
+        
         self.update_ship_loc()

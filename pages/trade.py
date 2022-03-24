@@ -6,6 +6,10 @@ from pages.components import Dialog
 class Trade:
     def __init__(self, this):
         self.this = this
+        
+    def load_data(self):
+        this = self.this
+        cid = []
         self.background = pygame.transform.scale(
             pygame.image.load("_assets/trade/background.png")
             .convert_alpha(), (this.resolution_width, this.resolution_height)
@@ -17,7 +21,8 @@ class Trade:
                          hint="选择需要购买的货物 点击交易按钮进行购买",
                         #  hint="点按库存内的卡片进行交易，点击交易按钮出售物品",
                          router="trade",
-                         btn_yes_func=self.confirm_trade)
+                         btn_yes_func=self.confirm_trade,
+                         btn_no_func=self.backtosail)
         
         self.villager = pygame.transform.scale(
             pygame.image.load("_assets/trade/villager.png")
@@ -31,7 +36,7 @@ class Trade:
         self.btn_buy_rect = self.btn_buy.get_rect()
         self.btn_buy_rect.x = 311
         self.btn_buy_rect.y = 265
-        this.Components.addComponent(self.btn_buy_rect, self.switch_window, router="trade", args="buy" )
+        cid.append(this.Components.addComponent(self.btn_buy_rect, self.switch_window, router="trade", args="buy"))
         
         self.btn_sell = pygame.transform.scale(
             pygame.image.load("_assets/trade/btn_sell.png")
@@ -40,7 +45,7 @@ class Trade:
         self.btn_sell_rect = self.btn_sell.get_rect()
         self.btn_sell_rect.x = 413
         self.btn_sell_rect.y = 265
-        this.Components.addComponent(self.btn_sell_rect, self.switch_window, router="trade", args="sell" )
+        cid.append(this.Components.addComponent(self.btn_sell_rect, self.switch_window, router="trade", args="sell"))
         
         self.btn_supply = pygame.transform.scale(
             pygame.image.load("_assets/trade/btn_supply.png")
@@ -49,29 +54,37 @@ class Trade:
         self.btn_supply_rect = self.btn_supply.get_rect()
         self.btn_supply_rect.x = 338
         self.btn_supply_rect.y = 316
-        this.Components.addComponent(self.btn_supply_rect, self.packsupply, router="trade")
+        cid.append(this.Components.addComponent(self.btn_supply_rect, self.packsupply, router="trade"))
         
         font = pygame.font.Font("_assets/pixelfont.ttf", 17)
         self.bobbletitle = font.render("选择交易类型", True, (255,255,255))
         
+        self.menu.set_ship_name()
+        font = pygame.font.Font("_assets/pixelfont.ttf", 17)
         self.this.showdialog = "buy"
         #* 商品卡片
         self.dialog_buy = TradeWindow(this, "购买货物")
-        self.goods = [i for i in this.data.items[this.map:this.map + 4]]
+        if self.this.player.location == "A":
+            location = 0
+        elif self.this.player.location == "B":
+            location = 4
+        elif self.this.player.location == "C":
+            location = 8
+        self.goods = [i for i in this.data.items[location:location + 4]]
         self.cards = [Card(this, i["icon"], i["name"]) for i in self.goods]
         self.cards_rect = [i.get_rect() for i in self.cards]
-        
+        # (65, 88) if small else (85, 116)
         for i, c in enumerate(self.cards_rect):
             c.x = self.cards_rect[i].x = 652 + (self.cards_rect[i].width + 47) * i
             c.y = self.cards_rect[i].y = 176
-            this.Components.addComponent(
+            cid.append(self.this.Components.addComponent(
                 c,
-                self.select_goods,
+                self.select_goods_func,
                 router="trade",
                 isDialog=True,
                 dialog_id = "buy",
                 args=i
-            )
+            ))
         
         
         self.pixelnum = PixelNum(this)
@@ -106,11 +119,24 @@ class Trade:
         self.slot = Slot(this)
         self.slot.signComponent(self.select_items, "trade")
         
-        self.sel_items_bg = pygame.Surface(
-            (self.slot.cards_rect[0].width + 10, self.slot.cards_rect[0].height + 8),
-            pygame.SRCALPHA
-        )
+        self.sel_items_bg = pygame.Surface((75, 96),pygame.SRCALPHA)
         self.sel_items_bg.fill((255,255,255,128))
+        
+        self.cid = cid
+    
+    def backtosail(self):
+        for i in self.cid:
+            self.this.Components.delComponent(i)
+        self.cid = []
+        self.slot.delete()
+        self.menu.delete()
+        self.this.pages.darken_screen()
+        self.this.pages.nautical.slot.generate_cards()
+        self.this.router = "nautical"
+        self.this.showdialog = ""
+        self.this.player.check_win_lose()
+        self.this.pages.nautical.past_loc = []
+        
     
     def confirm_trade(self):
         if self.this.showdialog == "buy" and self.select_goods is not None:
@@ -173,7 +199,7 @@ class Trade:
         self.select_item = None
         self.this.showdialog = window
     
-    def select_goods(self, select):
+    def select_goods_func(self, select):
         self.select_goods = select if self.select_goods != select else None
         pass
     

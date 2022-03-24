@@ -3,6 +3,7 @@ from pages.nautical import Nautical
 from pages.startpage import StartPage
 from pages.wharf import Wharf
 from pages.trade import Trade
+from pages.win_lose import win_lose
 
 class Pages:
     def __init__(self, this):
@@ -11,6 +12,7 @@ class Pages:
         self.wharf = Wharf(this)
         self.trade = Trade(this)
         self.nautical = Nautical(this)
+        self.win_lose = win_lose(this)
         pass
     
     # 转场效果

@@ -50,11 +50,11 @@ class Main:
         self.debug = False
         self.running = True
         
-        # self.router = "startmenu"
-        self.router = "nautical"
+        self.router = "startmenu"
         self.showdialog = ""
         self.map = 0
         
+        self.gameover_reason = ""
         
         self.data = load_data.Data()
         

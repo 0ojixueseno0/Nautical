@@ -3,6 +3,9 @@ import pygame
 class StartPage:
     def __init__(self, this):
         self.this = this
+        self.init()
+        
+    def init(self):
         self.cloudbg = self.cloudbg_copied = pygame.transform.scale(
             pygame.image.load("./_assets/startmenu/cloudbg.png")
             .convert_alpha(), (1280, 720)
@@ -29,7 +32,7 @@ class StartPage:
         self.this.Components.addComponent(
             startbtn_rect, 
             self.onbtnclick,
-            router="startpage"
+            router="startmenu"
             )
         
         self.x1 = 0
@@ -37,12 +40,13 @@ class StartPage:
         self.z1 = 0
         self.z2 = self.z1 + self.seabg_copied_rect.width
         self.rollspeed = 0.2
-        this.BackgroundMusic.startmenu_play()
+        self.this.BackgroundMusic.startmenu_play()
         pass
 
     def onbtnclick(self):
         self.this.pages.darken_screen()
         # self.this.BackgroundMusic.startmenu_stop()
+        self.this.pages.wharf.init()
         self.this.router = "wharf"
         
     def rollbg_action(self):

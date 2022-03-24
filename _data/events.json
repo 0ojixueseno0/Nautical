@@ -1,5 +1,35 @@
 {
-    "good_events": [],
-    "normal_events": [],
-    "bad_events": []
+    "good_events": [
+        {
+            "name": "盲盒",
+            "description": "海面上漂浮着一个箱子 你打捞起箱子 获得了 {} *1",
+            "fail": "你的库存已经满了，无法装下箱子...",
+            "eid": "get_random_item"
+        },
+        {
+            "name": "休整钓鱼",
+            "description": "你休整了一下 钓鱼补充了物资 x {}",
+            "eid": "fishing"
+        }
+    ],
+    "normal_events": [
+        {
+            "name": "无事发生",
+            "description": "风平浪静 无事发生",
+            "eid": "nothing_happened"
+        }
+    ],
+    "bad_events": [
+        {
+            "name": "海盗来袭",
+            "description": "你遭遇了海盗 海盗抢走了你的{}",
+            "fail": "你遭遇了海盗 海盗破坏了你的船",
+            "eid": "pirate_attack"
+        },
+        {
+            "name": "风暴",
+            "description": "你遇到了风暴 你的船被风暴损坏了一部分",
+            "eid": "random_damage"
+        }
+    ]
 }

@@ -6,6 +6,11 @@ class Slot:
     def __init__(self, this):
         self.this = this
         self.generate_cards()
+        self.components = []
+    
+    def delete(self):
+        for i in self.components:
+            self.this.Components.delComponent(i)
     
     def generate_cards(self):
         if 7 > len(self.this.player.inventory) > 0:
@@ -30,26 +35,32 @@ class Slot:
         """
         if 7 > len(self.this.player.inventory) > 0:
             for i, c in enumerate(self.cards_rect):
-                self.this.Components.addComponent(
+                x = self.this.Components.addComponent(
                     c,
                     function,
                     router=router,
                     args=i
                 )
+                self.components.append(x)
     
     def draw_action(self):
-        if 7 > len(self.this.player.inventory) > 0:
-            for i, c in enumerate(self.cards):
-                c.draw_action((
-                    50 + (10 + self.cards_rect[i].width) * i, 
-                    602
-                    ))
+        try:
+            if 7 > len(self.this.player.inventory) > 0:
+                for i, c in enumerate(self.cards):
+                    c.draw_action((
+                        50 + (10 + self.cards_rect[i].width) * i, 
+                        602
+                        ))
+        except:
+            self.generate_cards()
+            
     
     
 
 class Menu:
     def __init__(self, this, yes_label="确定", no_label="取消", hint="这是默认的提示信息", btn_yes_func=None, btn_no_func=None, router=None):
         self.this = this
+        self.components = []
         self.surface = pygame.Surface((1280,222), pygame.SRCALPHA)
         self.surface.fill((0,0,0,135))
         self.logo = pygame.transform.scale(
@@ -81,14 +92,14 @@ class Menu:
         self.btn_yes_rect.x, self.btn_yes_rect.y = 902, 611
         self.btn_no_rect = self.btn_no.get_rect()
         self.btn_no_rect.x, self.btn_no_rect.y = 1063, 611
-        this.Components.addComponent(
+        self.components.append(this.Components.addComponent(
             self.btn_yes_rect,
             self.btn_yes_action if btn_yes_func is None else btn_yes_func, 
-            this.router if router is None else router)
-        this.Components.addComponent(
+            this.router if router is None else router))
+        self.components.append(this.Components.addComponent(
             self.btn_no_rect, 
             self.btn_no_action if btn_no_func is None else btn_no_func, 
-            this.router if router is None else router)
+            this.router if router is None else router))
         self.money_icon = pygame.transform.scale(
             pygame.image.load("./_assets/objects/coin.png")
             .convert_alpha(), (29,29)
@@ -105,32 +116,15 @@ class Menu:
             pygame.image.load("./_assets/wharf/durable.png")
             .convert_alpha(), (27,27)
         )
-        if this.player.hasShip:
-            self.ship_name = self.font.render(this.player.ship["name"], True, (255,255,255))
-            # self.player_supplies = int(this.player.supplies)
-            # self.durable = int(this.player.ship["durable"])
-        # self.player_money = int(this.player.money)
         self.pixnum = PixelNum(this)
-        # if 7 > len(this.player.inventory) > 0:
-            # self.inventory = this.player.inventory
-            # self.slot_cards_generate()
-            
-    # def slot_cards_generate(self):
-    #     self.cards = [
-    #         Card(self.this, i["icon"], i["name"], small=True)
-    #         for i in self.this.player.inventory
-    #         ]
-    #     self.cards_rect = [
-    #         i.get_rect()
-    #         for i in self.cards
-    #     ]
-        
-    #     pass
-    # def upload_player_data(self):
-        # if self.this.player.hasShip:
-            # self.player_supplies = int(self.this.player.supplies)
-            # self.durable = int(self.this.player.ship["durable"])
-        # self.player_money = int(self.this.player.money)
+
+    def delete(self):
+        for i in self.components:
+            self.this.Components.delComponent(i)
+    
+    def set_ship_name(self):
+        if self.this.player.hasShip:
+            self.ship_name = self.font.render(self.this.player.ship["name"], True, (255,255,255))
     
     def change_hint(self, hint: str):
         self.hint = self.font.render(hint, True, (255,255,255))
@@ -175,8 +169,8 @@ class Menu:
 class Dialog:
     def __init__(self, this, title:str):
         self.this = this
-        font = pygame.font.Font("./_assets/pixelfont.ttf", 33)
-        self.title = font.render(title, True, (255,255,255))
+        self.font = pygame.font.Font("./_assets/pixelfont.ttf", 33)
+        self.title = self.font.render(title, True, (255,255,255))
         self.title_rect = self.title.get_rect()
         self.dialog = pygame.transform.scale(
             pygame.image.load("./_assets/component/dialog.png")
@@ -185,10 +179,18 @@ class Dialog:
         self.dialog_rect = self.dialog.get_rect()
         self.dialog_rect.x, self.dialog_rect.y = 70, 49
     
+    def get_rect(self):
+        return self.dialog_rect
+    
+    def change_title(self, title: str):
+        self.title = self.title = self.font.render(title, True, (255,255,255))
+        self.title_rect = self.title.get_rect()
+    
     def draw_action(self, pos=(70, 49)):
         self.this.screen.blit(self.dialog, pos)
         self.this.screen.blit(self.title, (
-            self.this.resolution_width/2 - self.title_rect.width/2,69
+            self.this.resolution_width//2 - self.title_rect.width//2,
+            pos[1] + 20
         ))
 
 class PixelNum:

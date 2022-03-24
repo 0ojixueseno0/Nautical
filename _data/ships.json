@@ -3,17 +3,17 @@
         "name": "小木船",
         "capacity": 1,
         "speed": 1,
-        "danger": 0,
-        "durable": 1,
+        "danger": 1,
+        "durable": 2,
         "icon": "./_assets/objects/raft.png",
         "price": 10
     },
     {
         "name": "帆船",
-        "capacity": 1,
+        "capacity": 2,
         "speed": 2,
         "danger": 1,
-        "durable": 2,
+        "durable": 3,
         "icon": "./_assets/objects/sailboat.png",
         "price": 20
     },
@@ -22,7 +22,7 @@
         "capacity": 2,
         "speed": 2,
         "danger": 2,
-        "durable": 3,
+        "durable": 4,
         "icon": "./_assets/objects/seeker.png",
         "price": 30
     },
@@ -31,7 +31,7 @@
         "capacity": 3,
         "speed": 4,
         "danger": 3,
-        "durable": 3,
+        "durable": 5,
         "icon": "./_assets/objects/voyage.png",
         "price": 50
     },
@@ -39,8 +39,8 @@
         "name": "快速帆船",
         "capacity": 3,
         "speed": 6,
-        "danger": 0,
-        "durable": 4,
+        "danger": 3,
+        "durable": 5,
         "icon": "./_assets/objects/fast_sailboat.png",
         "price": 80
     },
@@ -48,8 +48,8 @@
         "name": "卡拉克船",
         "capacity": 6,
         "speed": 5,
-        "danger": 6,
-        "durable": 6,
+        "danger": 4,
+        "durable": 7,
         "icon": "./_assets/objects/karak.png",
         "price": 130
     }

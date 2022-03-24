@@ -8,6 +8,9 @@ from pages.components import Card
 class Wharf:
     def __init__(self, this):
         self.this = this
+        
+    def init(self):
+        this = self.this
         self.cloudbg = self.cloudbg_copied = pygame.transform.scale(
             pygame.image.load("./_assets/wharf/cloudbg.png")
             .convert_alpha(), (1280, 720)
@@ -26,6 +29,7 @@ class Wharf:
                          hint="使用初始资金购买需要出海航行的船只",
                          router="wharf",
                          btn_no_func=self.backtotitle,
+                         btn_yes_func=self.buy_ship,
         )
         self.dialog = Dialog(this, "造船厂")
         self.num = PixelNum(this)
@@ -63,10 +67,20 @@ class Wharf:
         
         
         # self.cardpos = [223, 166]
-    def buy_ship(self, ship):
-        if self.this.data.ships[self.selected]["price"] < self.this.player.money:
-            self.this.player.money -= self.this.data.ships[self.selected]["price"] 
-            self.this.player.ship = self.this.data.ships[self.selected]
+    def buy_ship(self):
+        if self.this.data.ships[self.selected]["price"] <= self.this.player.money:
+            self.this.pages.darken_screen()
+            self.this.player.money -= self.this.data.ships[self.selected]["price"]
+            self.this.player.ship = self.this.data.ships[self.selected].copy()
+            self.this.player.supplies = 15
+            self.this.player.hasShip = True
+            self.this.router = "nautical"
+            self.this.BackgroundMusic.startmenu_stop()
+            self.this.pages.nautical.init(self.this)
+            self.menu.delete()
+            del(self.menu)
+            # pygame.time.delay(200)
+            self.this.BackgroundMusic.game_music_play()
         pass
     
     def choose_ship(self, ship):
