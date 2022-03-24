@@ -27,6 +27,8 @@ class Nautical:
         
         self.target_bg = pygame.Surface((10,10), pygame.SRCALPHA)
         self.target_bg.fill((255,0,0,128))
+        self.island_bg = pygame.Surface((10,10), pygame.SRCALPHA)
+        self.island_bg.fill((0,0,255,128))
         
         self.selected_arr = pygame.transform.scale(
             pygame.image.load("_assets/objects/select.png")
@@ -35,8 +37,9 @@ class Nautical:
         self.selected_arr_rect = self.selected_arr.get_rect()
         
         self.ship_loc = [self.mapdata["spawn"]["x"],self.mapdata["spawn"]["y"]] # 船所在的坐标
-        self.past_loc = [] # 走过的路径
+        self.past_loc = self.ship_loc # 走过的路径
         self.targets = [] # 可以行动的坐标组
+        self.islands = [] # 可以行动的岛屿组
         self.selected = [] # 选中的坐标
         
         
@@ -53,25 +56,37 @@ class Nautical:
     
     def update_target(self):
         targets = []
+        islands = []
         x = self.ship_loc[0]
         y = self.ship_loc[1]
         for b in [x-1, x+1]:
             try:
                 if self.mapdata["map"]["data"][y][b] != "0":
-                    targets.append([b,y])
+                    if self.mapdata["map"]["data"][y][b] == "1":
+                        targets.append([b,y])
+                    else:
+                        islands.append([b,y])
             except:
                 continue
         for b in [y-1, y+1]:
             try:
                 if self.mapdata["map"]["data"][b][x] != "0":
-                    targets.append([x,b])
+                    if self.mapdata["map"]["data"][b][x] == "1":
+                        targets.append([x,b])
+                    else:
+                        islands.append([x,b])
             except:
                 continue
+        try:
+            islands.remove(self.past_loc)
+        except:
+            pass
         try:
             targets.remove(self.past_loc)
         except:
             pass
         self.targets = targets
+        self.islands = islands
         # print(self.targets)
     
     def click_action(self, rawpos):
@@ -79,7 +94,7 @@ class Nautical:
         rawpos[0] -= self.offset[0]
         rawpos[1] -= self.offset[1]
         rawpos = self.convert_pos(rawpos)
-        if rawpos in self.targets:
+        if rawpos in self.targets or rawpos in self.islands:
             self.selected = [] if self.selected == rawpos else rawpos
     
     def sailing(self):
@@ -90,6 +105,7 @@ class Nautical:
         self.ship_loc = self.selected.copy()
         self.selected = []
         self.update_target()
+        self.menu.change_hint("点击高亮的航行点选择路线 点击航行按钮开始航行")
         
     def update_ship_loc(self):
         # self.ship_rect.x = 
@@ -98,7 +114,7 @@ class Nautical:
             self.parse_pos(self.ship_loc)[0],
             self.parse_pos(self.ship_loc)[1]
         )
-        self.ship_pos += (ship_pos - self.ship_pos) * 0.05
+        self.ship_pos += (ship_pos - self.ship_pos) * 0.1
         self.ship_rect.x = self.ship_pos.x
         self.ship_rect.y = self.ship_pos.y
         offset = pygame.Vector2(
@@ -140,6 +156,17 @@ class Nautical:
         for i in self.targets:
             pos = self.parse_pos(i)
             self.this.screen.blit(self.target_bg, (
+                pos[0] + self.offset[0] + self.coordinate_width//2 - 5,
+                pos[1] + self.offset[1] + self.coordinate_height//2 - 5
+            ))
+        if self.selected != []:
+            self.this.screen.blit(self.selected_arr, (
+                self.offset[0] + self.parse_pos(self.selected)[0] + self.coordinate_width//2 - 16,
+                self.offset[1] + self.parse_pos(self.selected)[1] + self.coordinate_height//2 - 40
+            ))
+        for i in self.islands:
+            pos = self.parse_pos(i)
+            self.this.screen.blit(self.island_bg, (
                 pos[0] + self.offset[0] + self.coordinate_width//2 - 5,
                 pos[1] + self.offset[1] + self.coordinate_height//2 - 5
             ))
