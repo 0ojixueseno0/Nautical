@@ -1,4 +1,5 @@
 import pygame
+import sys
 from utils import load_data
 from pages import pages
 from actions import action
@@ -27,7 +28,7 @@ from player import player
 ##      ========`-.____`-.___\_____#___.-`____.-'========         ##
 ##                           `=---='                              ##
 ##      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^        ##
-##              佛祖保佑       永无BUG     永不修改                  ##
+##              佛祖保佑       永无BUG     永不修改               ##
 ####################################################################
 """
 class Main:
@@ -84,9 +85,10 @@ class Main:
             pygame.display.update()
             self.clock.tick(self.fps)
         pygame.quit()
-        quit()
+        sys.exit()
 
 if __name__ == "__main__":
     main = Main()
     main.run_loop()
     pygame.quit()
+    sys.exit()

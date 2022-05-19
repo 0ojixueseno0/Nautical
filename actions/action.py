@@ -9,6 +9,8 @@ class MainActions:
             self.this.pages.wharf.rollbg_action()
         elif self.this.router == "win_lose":
             self.this.pages.win_lose.rollbg_action()
+        elif self.this.router == "choosemap":
+            self.this.pages.choosemap.rollbg_action()
 
 class DrawActions:
     def __init__(self, this):
@@ -24,4 +26,6 @@ class DrawActions:
             self.this.pages.nautical.draw_action()
         elif self.this.router == "win_lose":
             self.this.pages.win_lose.draw_action()
-        
+        elif self.this.router == "choosemap":
+            self.this.pages.choosemap.draw_action()
+            

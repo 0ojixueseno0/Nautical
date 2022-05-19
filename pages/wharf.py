@@ -68,19 +68,21 @@ class Wharf:
         
         # self.cardpos = [223, 166]
     def buy_ship(self):
-        if self.this.data.ships[self.selected]["price"] <= self.this.player.money:
+        if self.this.data.ships[self.selected]["price"] <= self.this.player.money and self.selected is not None:
             self.this.pages.darken_screen()
             self.this.player.money -= self.this.data.ships[self.selected]["price"]
             self.this.player.ship = self.this.data.ships[self.selected].copy()
             self.this.player.supplies = 15
             self.this.player.hasShip = True
-            self.this.router = "nautical"
-            self.this.BackgroundMusic.startmenu_stop()
-            self.this.pages.nautical.init(self.this)
+            self.this.router = "choosemap"
+            # self.this.BackgroundMusic.startmenu_stop()
+            self.this.pages.choosemap.init()
             self.menu.delete()
             del(self.menu)
             # pygame.time.delay(200)
-            self.this.BackgroundMusic.game_music_play()
+            # self.this.BackgroundMusic.game_music_play()
+            # self.this.pages.nautical.target_dialog()
+            # self.this.pages.nautical.on_first_round = True
         pass
     
     def choose_ship(self, ship):

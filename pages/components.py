@@ -61,6 +61,7 @@ class Menu:
     def __init__(self, this, yes_label="确定", no_label="取消", hint="这是默认的提示信息", btn_yes_func=None, btn_no_func=None, router=None):
         self.this = this
         self.components = []
+        self.ship_name = None
         self.surface = pygame.Surface((1280,222), pygame.SRCALPHA)
         self.surface.fill((0,0,0,135))
         self.logo = pygame.transform.scale(
@@ -149,7 +150,7 @@ class Menu:
         self.this.screen.blit(self.btn_no, (self.btn_no_rect.x, self.btn_no_rect.y))
         self.this.screen.blit(self.btn_yes_label, (self.btn_yes_rect.x + 25, self.btn_yes_rect.y + 16))
         self.this.screen.blit(self.btn_no_label, (self.btn_no_rect.x + 25, self.btn_no_rect.y + 16))
-        if self.this.player.hasShip:
+        if self.this.player.hasShip and self.ship_name is not None:
             self.this.screen.blit(self.ship_icon, (567, 577)) #Ship 1
             self.this.screen.blit(self.ship_name, (605, 585))
             
@@ -254,3 +255,77 @@ class Card:
             )
         )
         pass
+
+class Notify:
+    def __init__(self,
+                 this,
+                 title="提示",
+                 content="一段提示信息",
+                 yes_label="确定",
+                 no_label="取消", 
+                 btn_yes_func=None,
+                 btn_no_func=None,
+                 router=None):
+        self.this = this
+        self.components = []
+        
+        self.title_font = pygame.font.Font("./_assets/pixelfont.ttf", 20)
+        self.title = self.title_font.render(title, True, (255,255,255))
+        self.title_rect = self.title.get_rect()
+        
+        self.content_font = pygame.font.Font("./_assets/pixelfont.ttf", 16)
+        self.content = self.content_font.render(content, True, (255,255,255))
+        self.content_rect = self.content.get_rect()
+        
+        self.dialog_bg = pygame.transform.scale(
+            pygame.image.load("./_assets/component/notify.png")
+            .convert_alpha(), (448,229)
+        )
+        self.dialog_bg_rect = self.dialog_bg.get_rect()
+        self.dialog_bg_rect.x, self.dialog_bg_rect.y = 416, 300
+
+        self.btn_yes = self.btn_no = pygame.transform.scale(
+            pygame.image.load("./_assets/component/btn.png")
+            .convert_alpha(), (62, 36)
+        )
+        self.btn_yes_rect = self.btn_yes.get_rect()
+        self.btn_yes_rect.x, self.btn_yes_rect.y = 555, 475
+        self.btn_no_rect = self.btn_no.get_rect()
+        self.btn_no_rect.x, self.btn_no_rect.y = 664, 475
+        
+        self.btn_label_font = pygame.font.Font("./_assets/pixelfont.ttf", 14)
+        self.btn_yes_label = self.btn_label_font.render(yes_label, True, (0,0,0))
+        self.btn_no_label = self.btn_label_font.render(no_label, True, (0,0,0))
+        
+        self.components.append(this.Components.addComponent(
+            self.btn_yes_rect,
+            self.btn_yes_action if btn_yes_func is None else btn_yes_func,
+            this.router if router is None else router
+        ))
+        self.components.append(this.Components.addComponent(
+            self.btn_no_rect,
+            self.btn_no_action if btn_no_func is None else btn_no_func,
+            this.router if router is None else router
+        ))
+    
+    def get_rect(self):
+        return self.dialog_bg_rect
+    
+    def delete(self):
+        for i in self.components:
+            self.this.Components.delComponent(i)
+    
+    def btn_yes_action(self):
+        print("Notify: default btn yes")
+    
+    def btn_no_action(self):
+        print("Notify: default btn no")
+    
+    def draw_action(self):
+        self.this.screen.blit(self.dialog_bg, (416, 300))
+        self.this.screen.blit(self.title, (416+self.dialog_bg_rect.w/2-self.title_rect.width/2,317))
+        self.this.screen.blit(self.content,(416+self.dialog_bg_rect.w/2-self.content_rect.width/2,399))
+        self.this.screen.blit(self.btn_yes,(555, 475))
+        self.this.screen.blit(self.btn_yes_label,(572, 486))
+        self.this.screen.blit(self.btn_no,(664, 475))
+        self.this.screen.blit(self.btn_no_label,(681, 486))

@@ -1,7 +1,7 @@
 [
     {
         "name": "木材",
-        "price": 10,
+        "price": 5,
         "icon": "./_assets/items/wood.png",
         "id": "wood"
     },
@@ -25,25 +25,25 @@
     },
     {
         "name": "盐",
-        "price": 20,
+        "price": 10,
         "icon": "./_assets/items/salt.png",
         "id": "salt"
     },
     {
         "name": "酒",
-        "price": 30,
+        "price": 15,
         "icon": "./_assets/items/wine.png",
         "id": "wine"
     },
     {
         "name": "香水",
-        "price": 50,
+        "price": 20,
         "icon": "./_assets/items/perfume.png",
         "id": "perfume"
     },
     {
         "name": "水晶",
-        "price": 100,
+        "price": 40,
         "icon": "./_assets/items/crystal.png",
         "id": "crystal"
     },
@@ -61,13 +61,13 @@
     },
     {
         "name": "兽牙",
-        "price": 100,
+        "price": 35,
         "icon": "./_assets/items/teeth.png",
         "id": "teeth"
     },
     {
         "name": "珠宝",
-        "price": 150,
+        "price": 40,
         "icon": "./_assets/items/jewelry.png",
         "id": "jewelry"
     }

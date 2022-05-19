@@ -17,9 +17,9 @@ class BackgroundMusic:
     
     def play_piracy(self):
         pygame.mixer.init()
-        self.sea_effect.play(loops=1)
-
-        pass
+        # self.sea_effect.play(loops=1)
+        self.piracy.stop()
+        self.piracy.play(loops=1)
     
     def game_music_play(self):
         pygame.mixer.init()

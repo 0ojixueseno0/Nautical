@@ -5,6 +5,7 @@
         "speed": 1,
         "danger": 1,
         "durable": 2,
+        "max_durable": 2,
         "icon": "./_assets/objects/raft.png",
         "price": 10
     },
@@ -14,8 +15,9 @@
         "speed": 2,
         "danger": 1,
         "durable": 3,
+        "max_durable": 3,
         "icon": "./_assets/objects/sailboat.png",
-        "price": 20
+        "price": 15
     },
     {
         "name": "探索者号",
@@ -23,8 +25,9 @@
         "speed": 2,
         "danger": 2,
         "durable": 4,
+        "max_durable": 4,
         "icon": "./_assets/objects/seeker.png",
-        "price": 30
+        "price": 20
     },
     {
         "name": "远航号",
@@ -32,8 +35,9 @@
         "speed": 4,
         "danger": 3,
         "durable": 5,
+        "max_durable": 5,
         "icon": "./_assets/objects/voyage.png",
-        "price": 50
+        "price": 25
     },
     {
         "name": "快速帆船",
@@ -41,8 +45,9 @@
         "speed": 6,
         "danger": 3,
         "durable": 5,
+        "max_durable": 5,
         "icon": "./_assets/objects/fast_sailboat.png",
-        "price": 80
+        "price": 30
     },
     {
         "name": "卡拉克船",
@@ -50,7 +55,8 @@
         "speed": 5,
         "danger": 4,
         "durable": 7,
+        "max_durable": 7,
         "icon": "./_assets/objects/karak.png",
-        "price": 130
+        "price": 35
     }
 ]

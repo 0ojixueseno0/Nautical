@@ -17,6 +17,12 @@
             "name": "无事发生",
             "description": "风平浪静 无事发生",
             "eid": "nothing_happened"
+        },
+        {
+            "name": "修缮船只",
+            "description": "你修理了自己的船只",
+            "description_fail": "你的船只没有损坏，不需要修补",
+            "eid": "fix_ship"
         }
     ],
     "bad_events": [

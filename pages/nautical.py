@@ -6,6 +6,8 @@ from pages.components import Dialog, Menu, Slot
 class Nautical:
     def __init__(self, this):
         self.this = this
+        self.on_first_round = True
+        self.continue_game = False
         
     def init(self, this):
         self.show_dialog = False
@@ -60,15 +62,18 @@ class Nautical:
         )
         self.selected_arr_rect = self.selected_arr.get_rect()
         
-        self.ship_loc = [self.mapdata["spawn"]["x"],self.mapdata["spawn"]["y"]] # 船所在的坐标
-        self.past_loc = self.ship_loc # 走过的路径
+        if self.continue_game == False:
+            self.ship_loc = [self.mapdata["spawn"]["x"],self.mapdata["spawn"]["y"]] # 船所在的坐标
+            self.past_loc = self.ship_loc # 走过的路径
+            self.total_round = 0
+        else:
+            self.load_ship_data()
         self.targets = [] # 可以行动的坐标组
         self.islands = [] # 可以行动的岛屿组
         self.selected = [] # 选中的坐标
         
         self.round = this.player.ship["speed"] if this.player.hasShip else 0
         self.current_round = self.round
-        self.total_round = 0
         # self.round_title = self.font.render("已航行了 {} 回合", True, (255,255,255))
         # self.round_title = 
         
@@ -84,15 +89,31 @@ class Nautical:
         self.update_target()
         self.check_ship_loc()
 
+    def load_ship_data(self):
+        self.ship_loc = self.this.player.map["ship_loc"]
+        self.past_loc = self.this.player.map["past_loc"]
+        self.total_round = self.this.player.map["round"]
+        self.check_ship_loc()
+        self.show_target_dialog()
+    
+    def show_target_dialog(self):
+        self.this.showdialog = "event_dialog"
+        # self.event_dialog.change_title(event["name"])
+        self.event_dialog.change_title("获胜目标")
+        self.event_description = f"持有货币达到 {self.this.player.target_money} 金币"
+        self.menu.change_hint(self.event_description)
+        self.show_dialog = True
+
+    
     def check_ship_loc(self):
         block = self.mapdata["map"]["data"][self.ship_loc[1]][self.ship_loc[0]]
         if block in ["2","3","4"]:
             if block == "2":
-                self.this.player.location = "A"
+                self.this.player.island = "A"
             elif block == "3":
-                self.this.player.location = "B"
+                self.this.player.island = "B"
             elif block == "4":
-                self.this.player.location = "C"
+                self.this.player.island = "C"
             self.this.pages.trade.load_data()
             self.this.pages.darken_screen()
             self.this.router = "trade"
@@ -104,6 +125,8 @@ class Nautical:
 
     def close_dialog(self):
         self.show_dialog = False
+        self.on_first_round = False
+        self.menu.change_hint("点击航行点选择路线 点击航行按钮开始航行 双击航行点直接航行")
         self.this.showdialog = ""
         self.this.player.check_win_lose()
 
@@ -112,6 +135,14 @@ class Nautical:
         print("Event:",eid)
         if eid == "nothing_happened":
             self.menu.change_hint(event["description"])
+            return
+        if eid == "fix_ship":
+            self.menu.change_hint(
+                event["description"] 
+                if self.this.player.ship["durable"] < self.this.player.ship["max_durable"] 
+                else event["description_fail"]
+            )
+            self.this.player.ship["durable"] += 1 if self.this.player.ship["durable"] < self.this.player.ship["max_durable"] else 0
             return
         self.this.showdialog = "event_dialog"
         self.event_dialog.change_title(event["name"])
@@ -131,12 +162,12 @@ class Nautical:
             self.event_description = self.event_description.format(addsupply)
             self.this.player.supplies += addsupply
         elif eid == "pirate_attack":
+            self.this.BackgroundMusic.play_piracy()
             if len(self.this.player.inventory) > 0:
                 item = random.randint(0,len(self.this.player.inventory)-1)
                 self.event_description = event["description"].format(self.this.player.inventory[item]["name"])
                 del(self.this.player.inventory[item])
                 self.slot.generate_cards()
-                self.this.BackgroundMusic.play_piracy()
             else:
                 self.event_description = event["fail"]
                 self.this.player.ship["durable"] -= 1
@@ -183,6 +214,7 @@ class Nautical:
         if self.current_round == 0:
             self.current_round = self.round
             self.total_round += 1
+            self.this.player.supplies -= 1
             if self.random_bool():
                 self.events()
         else:

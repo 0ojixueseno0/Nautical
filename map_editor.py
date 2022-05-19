@@ -183,7 +183,7 @@ class Main:
         
         self.components = components.Comp(self)
         self.router = "editor"
-        self.map = "0"
+        self.map = "2"
         self.pointer_pos = (0, 0)
         
         self.editor = editor(self)

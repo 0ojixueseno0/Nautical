@@ -4,6 +4,7 @@ from pages.startpage import StartPage
 from pages.wharf import Wharf
 from pages.trade import Trade
 from pages.win_lose import win_lose
+from pages.choosemap import ChooseMap
 
 class Pages:
     def __init__(self, this):
@@ -13,6 +14,7 @@ class Pages:
         self.trade = Trade(this)
         self.nautical = Nautical(this)
         self.win_lose = win_lose(this)
+        self.choosemap = ChooseMap(this)
         pass
     
     # 转场效果

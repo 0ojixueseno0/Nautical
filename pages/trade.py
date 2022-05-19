@@ -64,11 +64,11 @@ class Trade:
         self.this.showdialog = "buy"
         #* 商品卡片
         self.dialog_buy = TradeWindow(this, "购买货物")
-        if self.this.player.location == "A":
+        if self.this.player.island == "A":
             location = 0
-        elif self.this.player.location == "B":
+        elif self.this.player.island == "B":
             location = 4
-        elif self.this.player.location == "C":
+        elif self.this.player.island == "C":
             location = 8
         self.goods = [i for i in this.data.items[location:location + 4]]
         self.cards = [Card(this, i["icon"], i["name"]) for i in self.goods]
@@ -136,6 +136,8 @@ class Trade:
         self.this.showdialog = ""
         self.this.player.check_win_lose()
         self.this.pages.nautical.past_loc = []
+        if self.this.pages.nautical.on_first_round:
+            self.this.pages.nautical.show_target_dialog()
         
     
     def confirm_trade(self):
@@ -163,11 +165,11 @@ class Trade:
     
     def getrect(self, itemname: str=None) -> float:
         mapdata = self.this.data.get_map_data(self.this.map)
-        if itemname in mapdata[self.this.player.location]["sell"]:
+        if itemname in mapdata[self.this.player.island]["sell"]:
             return 0.9
-        if itemname in mapdata[self.this.player.location]["saleable"]:
+        if itemname in mapdata[self.this.player.island]["saleable"]:
             return 1.2
-        if itemname in mapdata[self.this.player.location]["unsaleable"]:
+        if itemname in mapdata[self.this.player.island]["unsaleable"]:
             return 0.6
         return 1
     

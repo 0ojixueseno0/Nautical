@@ -1,9 +1,11 @@
 import json
+import atexit
 
 class Player:
     def __init__(self, this):
         self.this = this
         self.init()
+        atexit.register(self.save_player)
     
     def init(self):
         with open("./_data/player.json", encoding="utf-8") as f:
@@ -13,8 +15,10 @@ class Player:
         self.supplies = data["supplies"]
         self.ship = data["ship"]
         self.inventory = data["inventory"]
-        self.hasShip = False
-        self.location = "A" # 所在岛屿
+        self.hasShip = data["hasShip"]
+        self.island = "A" # 所在岛屿
+        self.inMap = data["inMap"]
+        self.map = data["map"]
     
     def clear(self):
         self.money = max(25, self.money)
@@ -44,21 +48,32 @@ class Player:
     
     def reset_player(self):
         data = {
-            "money": 25,
+            "money": 25 if self.money < 25 else self.money,
             "supplies": 0,
+            "hasShip": False,
             "ship": {},
-            "inventory": []
+            "inventory": [],
+            "inMap": False,
+            "map": {}
         }
-        with open("./_data/player.json", "w") as f:
+        with open("./_data/player.json", "w", encoding="utf-8") as f:
             f.write(json.dumps(data, indent=4, ensure_ascii=False))
     
     def save_player(self):
         data = {
             "money": self.money,
             "supplies": self.supplies,
+            "hasShip": self.hasShip,
             "ship": self.ship,
-            "inventory": self.inventory
+            "inventory": self.inventory,
+            "inMap": self.inMap,
+            "map": {
+                "mapid": self.this.map,
+                "ship_loc": self.this.pages.nautical.ship_loc,
+                "past_loc": self.this.pages.nautical.past_loc,
+                "round": self.this.pages.nautical.total_round
+            }
         }
-        with open("./_data/player.json", "w") as f:
+        with open("./_data/player.json", "w", encoding="utf-8") as f:
             f.write(json.dumps(data, indent=4, ensure_ascii=False))
             
