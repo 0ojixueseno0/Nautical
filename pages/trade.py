@@ -158,6 +158,7 @@ class Trade:
             price = int(currentitem["price"])
             self.this.player.money += price * self.getrect(currentitem["id"])
             self.menu.change_hint("成功售出 {}".format(currentitem["name"]))
+            self.this.Components.delComponent(self.cid[self.select_item])
             del(self.this.player.inventory[self.select_item])
             self.slot.generate_cards()
             self.select_item = None

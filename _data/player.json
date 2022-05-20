@@ -1,42 +1,38 @@
 {
-    "money": 326.0,
-    "supplies": 15,
+    "money": 17.5,
+    "target_money": 65.0,
+    "rejoin": true,
+    "supplies": 6,
     "hasShip": true,
     "ship": {
-        "name": "卡拉克船",
-        "capacity": 6,
-        "speed": 5,
-        "danger": 4,
-        "durable": 7,
-        "max_durable": 7,
-        "icon": "./_assets/objects/karak.png",
-        "price": 35
+        "name": "小木船",
+        "capacity": 1,
+        "speed": 1,
+        "danger": 1,
+        "durable": 2,
+        "max_durable": 2,
+        "icon": "./_assets/objects/raft.png",
+        "price": 10
     },
     "inventory": [
         {
-            "name": "小麦",
-            "price": 15,
-            "icon": "./_assets/items/wheat.png",
-            "id": "wheat"
-        },
-        {
-            "name": "绸缎",
-            "price": 15,
-            "icon": "./_assets/items/silk.png",
-            "id": "silk"
+            "name": "木材",
+            "price": 5,
+            "icon": "./_assets/items/wood.png",
+            "id": "wood"
         }
     ],
     "inMap": true,
     "map": {
         "mapid": 0,
         "ship_loc": [
-            25,
-            6
+            9,
+            4
         ],
         "past_loc": [
-            25,
-            6
+            10,
+            4
         ],
-        "round": 0
+        "round": 9
     }
 }

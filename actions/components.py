@@ -14,6 +14,9 @@ class Comp:
                 del(self.components[i])
                 break
     
+    def clear(self):
+        self.components = []
+    
     def addComponent(self, rect, function, router=None, args=None, isDialog=False, dialog_id=None):
         router = self.this.router if router is None else router
         comp = {

@@ -8,6 +8,7 @@ class win_lose:
         self.this = this
     
     def init(self):
+        self.this.player.clear()
         this = self.this
         self.cloudbg = self.cloudbg_copied = pygame.transform.scale(
             pygame.image.load("./_assets/wharf/cloudbg.png")
@@ -55,6 +56,7 @@ class win_lose:
             router="win_lose"
         )
     
+          
     def exitgame(self):
         pygame.event.post(pygame.event.Event(pygame.QUIT))
     

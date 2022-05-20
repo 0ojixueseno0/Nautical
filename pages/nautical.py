@@ -50,11 +50,32 @@ class Nautical:
         self.slot = Slot(this)
         self.prop = self.mapdata["map"]["prop"].split(":")
         self.coordinate()
-        
-        self.target_bg = pygame.Surface((10,10), pygame.SRCALPHA)
-        self.target_bg.fill((255,0,0,128))
-        self.island_bg = pygame.Surface((10,10), pygame.SRCALPHA)
-        self.island_bg.fill((0,0,255,128))
+
+        self.target_bg = {
+            "up": pygame.transform.scale(
+                pygame.image.load("_assets/nautical/g_arrow_up.png").convert_alpha(), (24,24)),
+            "down": pygame.transform.scale(
+                pygame.image.load("_assets/nautical/g_arrow_down.png").convert_alpha(), (24,24)),
+            "left": pygame.transform.scale(
+                pygame.image.load("_assets/nautical/g_arrow_left.png").convert_alpha(), (24,24)),
+            "right": pygame.transform.scale(
+                pygame.image.load("_assets/nautical/g_arrow_right.png").convert_alpha(), (24,24)),
+        }
+        # self.past_bg = {
+        #     "down": pygame.transform.scale(
+        #         pygame.image.load("_assets/nautical/r_arrow_up.png").convert_alpha(), (24,24)),
+        #     "up": pygame.transform.scale(
+        #         pygame.image.load("_assets/nautical/r_arrow_down.png").convert_alpha(), (24,24)),
+        #     "right": pygame.transform.scale(
+        #         pygame.image.load("_assets/nautical/r_arrow_left.png").convert_alpha(), (24,24)),
+        #     "left": pygame.transform.scale(
+        #         pygame.image.load("_assets/nautical/r_arrow_right.png").convert_alpha(), (24,24)),
+        # }
+
+        self.island_bg = pygame.transform.scale(
+            pygame.image.load("_assets/nautical/island.png")
+            .convert_alpha(), (24,24)
+        )
         
         self.selected_arr = pygame.transform.scale(
             pygame.image.load("_assets/objects/select.png")
@@ -77,10 +98,18 @@ class Nautical:
         # self.round_title = self.font.render("已航行了 {} 回合", True, (255,255,255))
         # self.round_title = 
         
-        self.ship_img = pygame.transform.scale(
+        self.ship_img_left = pygame.transform.scale(
             pygame.image.load(this.player.ship["icon"])
             .convert_alpha(), (self.coordinate_width, self.coordinate_height)
         )
+        self.ship_img_right = pygame.transform.flip(pygame.transform.scale(
+            pygame.image.load(this.player.ship["icon"])
+            .convert_alpha(), (self.coordinate_width, self.coordinate_height)
+        ), True, False)
+        
+        self.ship_img = self.ship_img_left
+        
+        
         self.ship_rect = self.ship_img.get_rect()
         self.ship_pos = pygame.Vector2(self.parse_pos(self.ship_loc))
         # self.ship_pos = pygame.Vector2((0,0))
@@ -106,6 +135,8 @@ class Nautical:
 
     
     def check_ship_loc(self):
+        if self.this.player.rejoin:
+            return
         block = self.mapdata["map"]["data"][self.ship_loc[1]][self.ship_loc[0]]
         if block in ["2","3","4"]:
             if block == "2":
@@ -117,6 +148,8 @@ class Nautical:
             self.this.pages.trade.load_data()
             self.this.pages.darken_screen()
             self.this.router = "trade"
+            return True
+        return False
     
     def random_bool(self, true:int=50) -> bool:
         # turenum: persent of true
@@ -205,21 +238,23 @@ class Nautical:
     
     
     def stay(self):
-        self.check_round()
-        if self.random_bool(100):
-            self.events()
-        pass
+        if self.check_round():
+            if self.random_bool(100):
+                self.events()
+            pass
     
     def check_round(self):
         if self.current_round == 0:
             self.current_round = self.round
             self.total_round += 1
             self.this.player.supplies -= 1
+            if self.this.player.check_win_lose():
+                return False
             if self.random_bool():
                 self.events()
         else:
             self.current_round -= 1
-        pass
+        return True
     
     def update_target(self):
         targets = []
@@ -271,13 +306,20 @@ class Nautical:
         if self.selected == []:
             self.menu.change_hint("请先选择航行点")
             return
+        if self.this.player.rejoin:
+            self.this.player.rejoin = False
         self.past_loc = self.ship_loc.copy()
         self.ship_loc = self.selected.copy()
+        if self.parse_direct(self.past_loc) == "right":
+            self.ship_img = self.ship_img_left
+        elif self.parse_direct(self.past_loc) == "left":
+            self.ship_img = self.ship_img_right
         self.selected = []
-        self.update_target()
-        self.check_round()
         self.menu.change_hint("点击航行点选择路线 点击航行按钮开始航行 双击航行点直接航行")
-        self.check_ship_loc()
+        self.update_target()
+        if self.check_ship_loc():
+            return
+        self.check_round()
         
     def update_ship_loc(self):
         # self.ship_rect.x = 
@@ -321,16 +363,35 @@ class Nautical:
         if self.select is not None:
             self.mapdata[self.select[1]][self.select[0]] = type
     
+    def parse_direct(self, pos):
+        if self.ship_loc[0] < pos[0]:
+            return "right"
+        elif self.ship_loc[0] > pos[0]:
+            return "left"
+        elif self.ship_loc[1] < pos[1]:
+            return "down"
+        elif self.ship_loc[1] > pos[1]:
+            return "up"
+        else:
+            return "stay"
+    
     def draw_action(self):
         self.this.screen.blit(self.background, self.offset)
         self.this.screen.blit(self.ship_img, self.ship_rect.move(self.offset))
         
         for i in self.targets:
+            direct = self.parse_direct(i)
             pos = self.parse_pos(i)
-            self.this.screen.blit(self.target_bg, (
-                pos[0] + self.offset[0] + self.coordinate_width//2 - 5,
-                pos[1] + self.offset[1] + self.coordinate_height//2 - 5
+            self.this.screen.blit(self.target_bg[direct], (
+                pos[0] + self.offset[0] + self.coordinate_width//2 - 10,
+                pos[1] + self.offset[1] + self.coordinate_height//2 - 8
             ))
+        # direct = self.parse_direct(self.past_loc)
+        # pos = self.parse_pos(self.past_loc)
+        # self.this.screen.blit(self.past_bg[direct], (
+        #     pos[0] + self.offset[0] + self.coordinate_width//2 - 10,
+        #     pos[1] + self.offset[1] + self.coordinate_height//2 - 8
+        # ))
         if self.selected != []:
             self.this.screen.blit(self.selected_arr, (
                 self.offset[0] + self.parse_pos(self.selected)[0] + self.coordinate_width//2 - 16,
@@ -339,8 +400,8 @@ class Nautical:
         for i in self.islands:
             pos = self.parse_pos(i)
             self.this.screen.blit(self.island_bg, (
-                pos[0] + self.offset[0] + self.coordinate_width//2 - 5,
-                pos[1] + self.offset[1] + self.coordinate_height//2 - 5
+                pos[0] + self.offset[0] + self.coordinate_width//2 - 12,
+                pos[1] + self.offset[1] + self.coordinate_height//2 - 12
             ))
         if self.selected != []:
             self.this.screen.blit(self.selected_arr, (

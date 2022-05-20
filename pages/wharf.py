@@ -46,17 +46,8 @@ class Wharf:
         
         self.shipinfo = shipinfo(this)
         
-        for i, c in enumerate(self.cards_rect):
-            if i == len(self.cards_rect) - 1:
-                break
-            c.x = self.cards_rect[i].x = self.card_pos[0] + i * self.offset
-            c.y = self.cards_rect[i].y = self.card_pos[1]
-            this.Components.addComponent(
-                c,
-                self.choose_ship,
-                router="wharf",
-                args=i
-            )
+        self.buildComponent()
+        
         self.selected = None
         
         self.pick_icon = pygame.transform.scale(
@@ -64,7 +55,20 @@ class Wharf:
             .convert_alpha(), (42,42)
         )
         self.pick_icon_rect = self.pick_icon.get_rect()
-        
+    
+    def buildComponent(self):
+        for i, c in enumerate(self.cards_rect):
+            if i == len(self.cards_rect) - 1:
+                break
+            c.x = self.cards_rect[i].x = self.card_pos[0] + i * self.offset
+            c.y = self.cards_rect[i].y = self.card_pos[1]
+            self.this.Components.addComponent(
+                c,
+                self.choose_ship,
+                router="wharf",
+                args=i
+            )
+        pass
         
         # self.cardpos = [223, 166]
     def buy_ship(self):
@@ -94,6 +98,10 @@ class Wharf:
             self.menu.change_hint("点击购买按钮购买该船只")
     
     def backtotitle(self):
+        self.menu.delete()
+        self.menu = None
+        self.this.Components.clear()
+        self.this.pages.startpage.buildComponent()
         self.this.pages.darken_screen()
         self.this.router = "startmenu"
         

@@ -32,10 +32,10 @@ class StartPage:
             pygame.image.load("./_assets/startmenu/continuebtn_disable.png")
             .convert_alpha(), (96, 42)
         )
-        self.helpbtn = pygame.transform.scale(
-            pygame.image.load("./_assets/startmenu/helpbtn.png")
-            .convert_alpha(), (96, 42)
-        )
+        # self.helpbtn = pygame.transform.scale(
+        #     pygame.image.load("./_assets/startmenu/helpbtn.png")
+        #     .convert_alpha(), (96, 42)
+        # )
         self.exitbtn = pygame.transform.scale(
             pygame.image.load("./_assets/startmenu/exitbtn.png")
             .convert_alpha(), (96, 42)
@@ -46,37 +46,7 @@ class StartPage:
         self.seabg_rect = self.seabg.get_rect()
         self.seabg_copied_rect = self.seabg_copied.get_rect()
         
-        startbtn_rect = self.startbtn.get_rect()
-        startbtn_rect.x, startbtn_rect.y = 592, 331
-        self.this.Components.addComponent(
-            startbtn_rect, 
-            self.onstart,
-            router="startmenu"
-            )
-        
-        continuebtn_rect = self.continuebtn.get_rect()
-        continuebtn_rect.x, continuebtn_rect.y = 592, 393
-        self.this.Components.addComponent(
-            continuebtn_rect, 
-            self.oncontinue,
-            router="startmenu"
-            )
-        
-        helpbtn_rect = self.helpbtn.get_rect()
-        helpbtn_rect.x, helpbtn_rect.y = 592, 454
-        self.this.Components.addComponent(
-            helpbtn_rect, 
-            self.notiNotify,
-            router="startmenu"
-            )
-        
-        exitbtn_rect = self.exitbtn.get_rect()
-        exitbtn_rect.x, exitbtn_rect.y = 592, 516
-        self.this.Components.addComponent(
-            exitbtn_rect, 
-            self.onexit,
-            router="startmenu"
-            )
+        self.buildComponent()
         
         self.x1 = 0
         self.x2 = self.x1 + self.cloudbg_copied_rect.width
@@ -88,27 +58,75 @@ class StartPage:
         self.notify = None
         pass
     
+    def buildComponent(self):
+        startbtn_rect = self.startbtn.get_rect()
+        startbtn_rect.x, startbtn_rect.y = 592, 375
+        self.this.Components.addComponent(
+            startbtn_rect, 
+            self.onstart,
+            router="startmenu"
+            )
+        
+        continuebtn_rect = self.continuebtn.get_rect()
+        continuebtn_rect.x, continuebtn_rect.y = 592, 438
+        self.this.Components.addComponent(
+            continuebtn_rect, 
+            self.oncontinue,
+            router="startmenu"
+            )
+        
+        # helpbtn_rect = self.helpbtn.get_rect()
+        # helpbtn_rect.x, helpbtn_rect.y = 592, 454
+        # self.this.Components.addComponent(
+        #     helpbtn_rect, 
+        #     self.help,
+        #     router="startmenu"
+        #     )
+        
+        exitbtn_rect = self.exitbtn.get_rect()
+        exitbtn_rect.x, exitbtn_rect.y = 592, 501
+        self.this.Components.addComponent(
+            exitbtn_rect, 
+            self.onexit,
+            router="startmenu"
+            )
+    
+    # def help(self):
+    #     if self.shownotify == False:
+    #         self.this.pages.help.init()
+    #         self.this.router = "help"
+    #         pass
+    
     def notiNotify(self):
         self.notify = Notify(self.this,
                              title="提示",
                              content="你有已保存的游戏进度，点击继续将覆盖已有游戏进度",
                              btn_no_func=self.notify_no,
+                             btn_yes_func=self.notify_yes,
                              yes_label="继续",
                              no_label="返回",
                              router="startmenu")
         self.shownotify = True
-    def notify_yes(self):
+    
+    def gowharf(self):
+        self.this.Components.clear()
         self.this.pages.darken_screen()
         self.this.pages.wharf.init()
         self.this.router = "wharf"
+        
+    
+    def notify_yes(self):
+        self.this.player.reset_player()
+        self.notify_no()
+        self.gowharf()
     
     def notify_no(self):
-        self.shownotify = False
         self.notify.delete()
         self.notify = None
+        self.shownotify = False
     
     def oncontinue(self):
-        if self.this.player.inMap and self.shownotify == False:
+        if self.this.player.inMap and self.shownotify == False and len(self.this.player.map) > 1:
             self.this.map = self.this.player.map["mapid"]
             self.this.pages.darken_screen()
             self.this.router = "nautical"
@@ -122,9 +140,7 @@ class StartPage:
             if self.this.player.inMap:
                 self.notiNotify()
             else:
-                self.this.pages.darken_screen()
-                self.this.pages.wharf.init()
-                self.this.router = "wharf"
+                self.gowharf()
             # self.this.BackgroundMusic.startmenu_stop()
     
     def onexit(self):
@@ -152,14 +168,13 @@ class StartPage:
         self.this.screen.blit(self.cloudbg_copied, (self.x2, 0))
         self.this.screen.blit(self.seabg, (self.z1, 480))
         self.this.screen.blit(self.seabg_copied, (self.z2, 480))
-        self.this.screen.blit(self.logo, (460, 142))
-        self.this.screen.blit(self.startbtn, (592, 331))
-        if self.this.player.inMap:
-            self.this.screen.blit(self.continuebtn, (592, 393))
-        else:
-            self.this.screen.blit(self.continuebtn_disable, (592, 393))
-        self.this.screen.blit(self.helpbtn, (592, 454))
-        self.this.screen.blit(self.exitbtn, (592, 516))
+        self.this.screen.blit(self.logo, (460, 158))
+        self.this.screen.blit(self.startbtn, (592, 375))
+        self.this.screen.blit(self.continuebtn_disable, (592, 438))
+        if self.this.player.inMap and len(self.this.player.map)>1:
+            self.this.screen.blit(self.continuebtn, (592, 438))
+        # self.this.screen.blit(self.helpbtn, (592, 454))
+        self.this.screen.blit(self.exitbtn, (592, 501))
         if self.shownotify:
             self.notify.draw_action()
 

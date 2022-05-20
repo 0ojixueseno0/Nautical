@@ -28,4 +28,6 @@ class DrawActions:
             self.this.pages.win_lose.draw_action()
         elif self.this.router == "choosemap":
             self.this.pages.choosemap.draw_action()
+        # elif self.this.router == "help":
+        #     self.this.pages.help.draw_action()
             
