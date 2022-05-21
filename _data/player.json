@@ -1,38 +1,11 @@
 {
-    "money": 17.5,
-    "target_money": 65.0,
-    "rejoin": true,
-    "supplies": 6,
-    "hasShip": true,
-    "ship": {
-        "name": "小木船",
-        "capacity": 1,
-        "speed": 1,
-        "danger": 1,
-        "durable": 2,
-        "max_durable": 2,
-        "icon": "./_assets/objects/raft.png",
-        "price": 10
-    },
-    "inventory": [
-        {
-            "name": "木材",
-            "price": 5,
-            "icon": "./_assets/items/wood.png",
-            "id": "wood"
-        }
-    ],
-    "inMap": true,
-    "map": {
-        "mapid": 0,
-        "ship_loc": [
-            9,
-            4
-        ],
-        "past_loc": [
-            10,
-            4
-        ],
-        "round": 9
-    }
+    "money": 25,
+    "target_money": 800050,
+    "rejoin": false,
+    "supplies": 0,
+    "hasShip": false,
+    "ship": {},
+    "inventory": [],
+    "inMap": false,
+    "map": {}
 }

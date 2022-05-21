@@ -74,6 +74,7 @@ class Trade:
         self.cards = [Card(this, i["icon"], i["name"]) for i in self.goods]
         self.cards_rect = [i.get_rect() for i in self.cards]
         # (65, 88) if small else (85, 116)
+        
         for i, c in enumerate(self.cards_rect):
             c.x = self.cards_rect[i].x = 652 + (self.cards_rect[i].width + 47) * i
             c.y = self.cards_rect[i].y = 176
@@ -147,7 +148,9 @@ class Trade:
                 self.this.player.money -= price
                 self.this.player.inventory.append(self.goods[self.select_goods])
                 self.menu.change_hint("成功购买 {}".format(self.goods[self.select_goods]["name"]))
+                self.slot.delete()
                 self.slot.generate_cards()
+                self.slot.signComponent(self.select_items, "trade")
             else:
                 self.menu.change_hint("你的货币不足以购买 {}"
                     .format(self.goods[self.select_goods]["name"])
@@ -158,9 +161,11 @@ class Trade:
             price = int(currentitem["price"])
             self.this.player.money += price * self.getrect(currentitem["id"])
             self.menu.change_hint("成功售出 {}".format(currentitem["name"]))
-            self.this.Components.delComponent(self.cid[self.select_item])
+            # self.this.Components.delComponent(self.cid[self.select_item])
             del(self.this.player.inventory[self.select_item])
+            self.slot.delete()
             self.slot.generate_cards()
+            self.slot.signComponent(self.select_items, "trade")
             self.select_item = None
             pass
     
