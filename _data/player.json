@@ -1,6 +1,6 @@
 {
     "money": 10,
-    "target_money": 50ww,
+    "target_money": 50,
     "rejoin": true,
     "supplies": 15,
     "hasShip": true,
