@@ -86,6 +86,10 @@ class ChooseMap:
         self.selected = var
     
     def backtotitle(self):
+        self.menu.delete()
+        self.menu = None
+        self.this.Components.clear()  
+        self.this.pages.startpage.buildComponent()  
         self.this.pages.darken_screen()
         self.this.router = "startmenu"
         
