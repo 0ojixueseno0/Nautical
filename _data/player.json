@@ -1,31 +1,28 @@
 {
-    "money": 10,
-    "target_money": 50,
+    "money": 52.0,
+    "target_money": 144.0,
     "rejoin": true,
     "supplies": 15,
-    "hasShip": true,
+    "hasShip": false,
     "ship": {
-        "name": "帆船",
+        "name": "探索者号",
         "capacity": 2,
         "speed": 2,
-        "danger": 1,
-        "durable": 3,
-        "max_durable": 3,
-        "icon": "./_assets/objects/sailboat.png",
-        "price": 15
+        "danger": 2,
+        "durable": 4,
+        "max_durable": 4,
+        "icon": "./_assets/objects/seeker.png",
+        "price": 20
     },
     "inventory": [],
     "inMap": false,
     "map": {
         "mapid": 0,
         "ship_loc": [
-            12,
-            2
+            9,
+            3
         ],
-        "past_loc": [
-            13,
-            2
-        ],
-        "round": 15
+        "past_loc": [],
+        "round": 17
     }
 }

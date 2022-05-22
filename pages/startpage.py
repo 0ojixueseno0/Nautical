@@ -109,6 +109,7 @@ class StartPage:
         self.shownotify = True
     
     def gowharf(self):
+        self.this.player.reset_player()
         self.this.Components.clear()
         self.this.pages.darken_screen()
         self.this.pages.wharf.init()
