@@ -1,28 +1,19 @@
 {
-    "money": 52.0,
-    "target_money": 144.0,
+    "money": 20.0,
+    "target_money": 40.0,
     "rejoin": true,
-    "supplies": 15,
+    "supplies": 0,
     "hasShip": false,
-    "ship": {
-        "name": "探索者号",
-        "capacity": 2,
-        "speed": 2,
-        "danger": 2,
-        "durable": 4,
-        "max_durable": 4,
-        "icon": "./_assets/objects/seeker.png",
-        "price": 20
-    },
+    "ship": {},
     "inventory": [],
     "inMap": false,
     "map": {
         "mapid": 0,
         "ship_loc": [
-            9,
-            3
+            3,
+            13
         ],
         "past_loc": [],
-        "round": 17
+        "round": 12
     }
 }

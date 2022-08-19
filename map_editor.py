@@ -2,9 +2,9 @@ import shutil
 import pygame
 import os
 import json
+import sys
 from actions import components
 from sounds import sound
-
 
 
 class MapGenerator:
@@ -162,7 +162,7 @@ class editor:
         pass
 
 class Main:
-    def __init__(self):
+    def __init__(self, map):
         # 分辨率
         self.resolution = self.resolution_width, self.resolution_height = (1280, 720)
         # 屏幕对象
@@ -183,7 +183,7 @@ class Main:
         
         self.components = components.Comp(self)
         self.router = "editor"
-        self.map = "2"
+        self.map = map
         self.pointer_pos = (0, 0)
         
         self.editor = editor(self)
@@ -220,5 +220,9 @@ class Main:
         quit()
 
 if __name__ == '__main__':
-    main = Main()
+    if len(sys.argv) > 1:
+        if sys.argv[1].endswith(".json"):
+            print("请直接输入地图编号 不需要带后缀")
+            raise SystemExit
+    main = Main(sys.argv[1] if len(sys.argv) > 1 else "0")
     main.run_loop()
