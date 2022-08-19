@@ -3,3 +3,4 @@ assets/
 *.zip
 __pycache__
 output/
+pages/__pycache__/
