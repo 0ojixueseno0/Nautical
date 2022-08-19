@@ -1,4 +1,4 @@
-<center><img src="./_md/GLogo.png"/><h1>Nautical</h1></center>
+<p align="center"><img src="./_md/GLogo.png"/><h1>Nautical</h1></p>
 
 ![](https://img.shields.io/badge/Python-pygame-brightgreen)
 ![](https://wakatime.com/badge/user/0bba3393-9739-4e92-9fda-c69b3d03d860/project/4ed445db-42ce-41f7-9269-742a419e31eb.svg)
